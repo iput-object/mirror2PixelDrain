@@ -1,0 +1,34 @@
+name: Mirror2PixelDrain
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_link:
+        description: 'Input Link To Mirror'
+        required: true
+      pd_token:
+        description: 'Input PixelDrain Token'
+        required: true
+
+permissions:
+  contents: write   # <-- this is required for creating releases
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Dhaka
+
+    steps:
+      - name: Checkout this repo (public)
+        uses: actions/checkout@v4
+
+      - name: Make scripts executable
+        run: |
+          chmod +x main.sh
+
+      - name: Run Main Script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ./main.sh "${{ github.event.inputs.file_link }}" "${{ github.event.inputs.pd_token }}"
